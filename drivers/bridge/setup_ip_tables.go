@@ -6,7 +6,7 @@ import (
 	"net"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/docker/libnetwork/iptables"
+	// "github.com/docker/libnetwork/iptables"
 	"github.com/vishvananda/netlink"
 )
 

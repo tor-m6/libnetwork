@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
+	"golang.org/x/sys/unix"
 )
 
 // flock acquires an advisory lock on a file descriptor.
@@ -27,7 +28,7 @@ func flock(db *DB, mode os.FileMode, exclusive bool, timeout time.Duration) erro
 		}
 
 		// Otherwise attempt to obtain an exclusive lock.
-		err := syscall.Flock(int(db.file.Fd()), flag|syscall.LOCK_NB)
+		err := unix.Flock(int(db.file.Fd()), flag|syscall.LOCK_NB)
 		if err == nil {
 			return nil
 		} else if err != syscall.EWOULDBLOCK {
@@ -41,7 +42,7 @@ func flock(db *DB, mode os.FileMode, exclusive bool, timeout time.Duration) erro
 
 // funlock releases an advisory lock on a file descriptor.
 func funlock(db *DB) error {
-	return syscall.Flock(int(db.file.Fd()), syscall.LOCK_UN)
+	return unix.Flock(int(db.file.Fd()), syscall.LOCK_UN)
 }
 
 // mmap memory maps a DB's data file.
@@ -79,11 +80,30 @@ func munmap(db *DB) error {
 	return err
 }
 
+var _zero uintptr
+
 // NOTE: This function is copied from stdlib because it is not available on darwin.
 func madvise(b []byte, advice int) (err error) {
-	_, _, e1 := syscall.Syscall(syscall.SYS_MADVISE, uintptr(unsafe.Pointer(&b[0])), uintptr(len(b)), uintptr(advice))
-	if e1 != 0 {
-		err = e1
+	var _p2 *byte
+	if len(b) > 0 {
+		_p2 = (*byte)(unsafe.Pointer(&b[0]))
+	} else {
+		_p2 = (*byte)(unsafe.Pointer(&_zero))
+	}
+	syscall.Entersyscall()
+	_r := c_madvise(unsafe.Pointer(_p2), uintptr(len(b)), int32(advice))
+	var errno syscall.Errno
+	setErrno := false
+	if _r < 0 {
+		errno = syscall.GetErrno()
+		setErrno = true
+	}
+	syscall.Exitsyscall()
+	if setErrno {
+		err = errno
 	}
 	return
 }
+
+//extern madvise
+func c_madvise(addr unsafe.Pointer, n uintptr, flags int32) int32

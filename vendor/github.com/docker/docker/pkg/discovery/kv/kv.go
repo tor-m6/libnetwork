@@ -134,7 +134,7 @@ func (s *Discovery) watchOnce(stopCh <-chan struct{}, watchCh <-chan []*store.KV
 }
 
 // Watch is exported
-func (s *Discovery) Watch(stopCh <-chan struct{}) (<-chan discovery.Entries, <-chan error) {
+func (s *Discovery) Watch1(stopCh <-chan struct{}) (<-chan discovery.Entries, <-chan error) {
 	ch := make(chan discovery.Entries)
 	errCh := make(chan error)
 

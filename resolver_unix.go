@@ -1,4 +1,4 @@
-// +build !windows
+// +build !windows,!inno
 
 package libnetwork
 
@@ -11,7 +11,7 @@ import (
 
 	"github.com/Sirupsen/logrus"
 	"github.com/docker/docker/pkg/reexec"
-	"github.com/docker/libnetwork/iptables"
+	// "github.com/docker/libnetwork/iptables"
 	"github.com/vishvananda/netns"
 )
 

@@ -1691,12 +1691,12 @@ func (n *network) Peers() []networkdb.PeerInfo {
 		return []networkdb.PeerInfo{}
 	}
 
-	agent := n.getController().getAgent()
-	if agent == nil {
-		return []networkdb.PeerInfo{}
-	}
+	// agent := n.getController().getAgent()
+	// if agent == nil {
+	// 	return []networkdb.PeerInfo{}
+	// }
 
-	return agent.networkDB.Peers(n.ID())
+	return nil // agent.networkDB.Peers(n.ID())
 }
 
 func (n *network) DriverOptions() map[string]string {

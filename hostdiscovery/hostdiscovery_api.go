@@ -14,7 +14,7 @@ type LeaveCallback func(entries []net.IP)
 // HostDiscovery primary interface
 type HostDiscovery interface {
 	//Watch Node join and leave cluster events
-	Watch(activeCallback ActiveCallback, joinCallback JoinCallback, leaveCallback LeaveCallback) error
+	WatchH(activeCallback ActiveCallback, joinCallback JoinCallback, leaveCallback LeaveCallback) error
 	// StopDiscovery stops the discovery process
 	StopDiscovery() error
 	// Fetch returns a list of host IPs that are currently discovered
